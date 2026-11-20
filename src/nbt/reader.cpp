@@ -68,8 +68,13 @@ private:
         const auto result = static_cast<std::size_t>(length);
         if (result > m_limits.maxElements - m_elements)
             fail("NBT collection exceeds configured element limit");
-        m_elements += result;
         return result;
+    }
+
+    void accountElements(std::size_t count) {
+        if (count > m_limits.maxElements - m_elements)
+            fail("NBT collection exceeds configured element limit");
+        m_elements += count;
     }
 
     std::string readString() {
@@ -102,6 +107,7 @@ private:
             const std::size_t count = readLength();
             if (count > m_bytes.size() - m_offset)
                 fail("truncated TAG_Byte_Array");
+            accountElements(count);
             ByteArray values;
             values.reserve(count);
             for (std::size_t i = 0; i < count; ++i)
@@ -136,6 +142,7 @@ private:
             const std::size_t count = readLength();
             if (count > (m_bytes.size() - m_offset) / sizeof(std::int32_t))
                 fail("truncated TAG_Int_Array");
+            accountElements(count);
             IntArray values;
             values.reserve(count);
             for (std::size_t i = 0; i < count; ++i)
@@ -146,6 +153,7 @@ private:
             const std::size_t count = readLength();
             if (count > (m_bytes.size() - m_offset) / sizeof(std::int64_t))
                 fail("truncated TAG_Long_Array");
+            accountElements(count);
             LongArray values;
             values.reserve(count);
             for (std::size_t i = 0; i < count; ++i)
