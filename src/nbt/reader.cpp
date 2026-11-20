@@ -4,6 +4,7 @@
 #include <limits>
 #include <sstream>
 #include <type_traits>
+#include <utility>
 
 namespace mcpp::nbt {
 namespace {
